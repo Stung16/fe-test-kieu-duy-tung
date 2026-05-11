@@ -1,7 +1,11 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { createSelector } from "@reduxjs/toolkit";
+import { mockTasks } from "@/assets/mockData";
+import type { Task, TaskStats, TaskStatus } from "@/types";
+import {
+  createSelector,
+  createSlice,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
 import dayjs from "dayjs";
-import type { Task, TaskStatus } from "@/types";
 import type { RootState } from "../store";
 
 interface TasksState {
@@ -9,7 +13,7 @@ interface TasksState {
 }
 
 const initialState: TasksState = {
-  items: [],
+  items: mockTasks,
 };
 
 const tasksSlice = createSlice({
@@ -51,6 +55,16 @@ const selectTasksState = (state: RootState) => state.tasks;
 export const selectAllTasks = createSelector(
   [selectTasksState],
   (tasks) => tasks.items,
+);
+
+export const selectTaskStats = createSelector(
+  [selectAllTasks],
+  (items): TaskStats => ({
+    total: items.length,
+    todo: items.filter((t) => t.status === "todo").length,
+    inProgress: items.filter((t) => t.status === "in_progress").length,
+    done: items.filter((t) => t.status === "done").length,
+  }),
 );
 
 export const selectRecentTasks = createSelector(

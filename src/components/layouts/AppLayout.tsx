@@ -18,7 +18,16 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { APP_NAME } from "@/constants";
 
 const { Header, Sider, Content } = Layout;
-
+const siderStyle: React.CSSProperties = {
+  overflow: "auto",
+  height: "100vh",
+  position: "sticky",
+  insetInlineStart: 0,
+  top: 0,
+  bottom: 0,
+  scrollbarWidth: "thin",
+  scrollbarGutter: "stable",
+};
 export default function AppLayout({ isDarkMode }: { isDarkMode: boolean }) {
   const dispatch = useDispatch();
   const collapsed = useSelector(selectCollapsed);
@@ -70,6 +79,7 @@ export default function AppLayout({ isDarkMode }: { isDarkMode: boolean }) {
         breakpoint="lg"
         theme={isDarkMode ? "dark" : "light"}
         width={240}
+        style={siderStyle}
       >
         <div
           className="flex items-center whitespace-nowrap overflow-hidden"

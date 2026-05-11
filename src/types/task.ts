@@ -12,3 +12,10 @@ export interface Task {
   createdAt: string;
   tags?: string[];
 }
+
+export interface TaskStats {
+  total: number;
+  todo: number;
+  inProgress: number;
+  done: number;
+}
