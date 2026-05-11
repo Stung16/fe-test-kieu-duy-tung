@@ -208,10 +208,6 @@ export const selectRecentTasks = createSelector(
       .slice(0, 5),
 );
 
-export const {
-  setFilter,
-  resetFilters,
-  setPage,
-} = tasksSlice.actions;
+export const { setFilter, resetFilters, setPage } = tasksSlice.actions;
 
 export default tasksSlice.reducer;

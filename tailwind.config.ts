@@ -2,12 +2,10 @@ import type { Config } from "tailwindcss";
 
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
-  // Dark mode triggered by `.dark-mode` class on parent (matches App.tsx)
   darkMode: ["class", ".dark-mode"],
   theme: {
     extend: {
       colors: {
-        // ── Ant Design synced semantic colors ──
         primary: {
           DEFAULT: "var(--color-primary)",
           light: "var(--color-primary-light)",
@@ -24,18 +22,15 @@ export default {
         info: {
           DEFAULT: "var(--color-info)",
         },
-        // ── Layout / surface colors ──
         surface: {
           DEFAULT: "var(--color-bg-container)",
           layout: "var(--color-bg-layout)",
           elevated: "var(--color-bg-elevated)",
         },
-        // ── Text colors ──
         content: {
           DEFAULT: "var(--color-text)",
           secondary: "var(--color-text-secondary)",
         },
-        // ── Border ──
         border: {
           DEFAULT: "var(--color-border)",
         },

@@ -36,6 +36,7 @@ import {
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
+import { useTaskFiltersSync } from "@/hooks/index";
 import { useCallback, useMemo, useState } from "react";
 import TaskFiltersBar from "./components/TaskFiltersBar";
 import TaskFormModal from "./components/TaskFormModal";
@@ -43,6 +44,7 @@ import TaskFormModal from "./components/TaskFormModal";
 const { Title, Text } = Typography;
 
 export default function TaskListPage() {
+  useTaskFiltersSync();
   const dispatch = useDispatch();
   const paginatedTasks = useSelector(selectPaginatedTasks);
   const filteredTotal = useSelector(selectFilteredTotal);

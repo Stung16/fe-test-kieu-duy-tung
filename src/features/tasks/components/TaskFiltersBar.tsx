@@ -79,6 +79,11 @@ export default function TaskFiltersBar() {
     dispatch(setFilter({ searchText: debouncedSearch.trim() }));
   }, [debouncedSearch, dispatch]);
 
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLocalSearch(filters.searchText);
+  }, [filters.searchText]);
+
   return (
     <Card
       size="small"
