@@ -70,6 +70,13 @@ export default function AppLayout({ isDarkMode }: { isDarkMode: boolean }) {
   useEffect(() => {
     dispatch(fetchTasks());
   }, [dispatch]);
+
+  useEffect(() => {
+    const currentTitle = menuItems.find(
+      (item) => item.key === location.pathname,
+    )?.title;
+    document.title = currentTitle ? `${currentTitle} | ${APP_NAME}` : APP_NAME;
+  }, [location.pathname, menuItems]);
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider
