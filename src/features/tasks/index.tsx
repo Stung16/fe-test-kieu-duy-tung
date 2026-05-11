@@ -1,16 +1,19 @@
 import { PRIORITY_MAP, STATUS_MAP, STATUS_OPTIONS } from "@/constants";
 import { useDispatch, useSelector } from "@/stores/hooks";
 import {
-  addTask,
-  deleteManyTasks,
-  deleteTask,
   selectFilteredTotal,
+  selectLoading,
   selectPaginatedTasks,
   selectPagination,
   setPage,
-  updateTask,
-  updateTaskStatus,
 } from "@/stores/slices/tasksSlice";
+import {
+  addTaskAsync,
+  deleteManyTasksAsync,
+  deleteTaskAsync,
+  updateTaskAsync,
+  updateTaskStatusAsync,
+} from "@/stores/middlewares/tasksThunks";
 import type { Task, TaskStatus } from "@/types";
 import { formatDate } from "@/utils";
 import {
@@ -44,6 +47,7 @@ export default function TaskListPage() {
   const paginatedTasks = useSelector(selectPaginatedTasks);
   const filteredTotal = useSelector(selectFilteredTotal);
   const pagination = useSelector(selectPagination);
+  const loading = useSelector(selectLoading);
   const { token } = theme.useToken();
   const { message, modal } = App.useApp();
 
@@ -62,12 +66,12 @@ export default function TaskListPage() {
   }, []);
 
   const handleFormSubmit = useCallback(
-    (task: Task) => {
+    async (task: Task) => {
       if (editingTask) {
-        dispatch(updateTask(task));
+        await dispatch(updateTaskAsync(task)).unwrap();
         message.success("Update task successfully");
       } else {
-        dispatch(addTask(task));
+        await dispatch(addTaskAsync(task)).unwrap();
         message.success("Add task successfully");
       }
       setModalOpen(false);
@@ -85,8 +89,8 @@ export default function TaskListPage() {
         okText: "Delete",
         okType: "danger",
         cancelText: "Cancel",
-        onOk: () => {
-          dispatch(deleteTask(id));
+        onOk: async () => {
+          await dispatch(deleteTaskAsync(id)).unwrap();
           setSelectedRowKeys((prev) => prev.filter((k) => k !== id));
           message.success("Delete task successfully");
         },
@@ -103,8 +107,10 @@ export default function TaskListPage() {
       okText: "Delete all",
       okType: "danger",
       cancelText: "Cancel",
-      onOk: () => {
-        dispatch(deleteManyTasks(selectedRowKeys as string[]));
+      onOk: async () => {
+        await dispatch(
+          deleteManyTasksAsync(selectedRowKeys as string[]),
+        ).unwrap();
         setSelectedRowKeys([]);
         message.success(`Deleted ${selectedRowKeys.length} tasks successfully`);
       },
@@ -112,8 +118,8 @@ export default function TaskListPage() {
   }, [dispatch, selectedRowKeys, modal, message]);
 
   const handleStatusChange = useCallback(
-    (id: string, status: TaskStatus) => {
-      dispatch(updateTaskStatus({ id, status }));
+    async (id: string, status: TaskStatus) => {
+      await dispatch(updateTaskStatusAsync({ id, status })).unwrap();
       message.success("Update task status successfully");
     },
     [dispatch, message],
@@ -269,6 +275,7 @@ export default function TaskListPage() {
         rowKey="id"
         columns={columns}
         dataSource={paginatedTasks}
+        loading={loading}
         rowSelection={{
           selectedRowKeys,
           onChange: setSelectedRowKeys,

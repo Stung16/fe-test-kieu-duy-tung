@@ -13,9 +13,10 @@ import {
   ChangeMode,
   selectCollapsed,
 } from "@/stores/slices/commonSlice";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { APP_NAME } from "@/constants";
+import { fetchTasks } from "@/stores/middlewares/tasksThunks";
 
 const { Header, Sider, Content } = Layout;
 const siderStyle: React.CSSProperties = {
@@ -66,7 +67,9 @@ export default function AppLayout({ isDarkMode }: { isDarkMode: boolean }) {
     },
     [navigate],
   );
-
+  useEffect(() => {
+    dispatch(fetchTasks());
+  }, [dispatch]);
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider

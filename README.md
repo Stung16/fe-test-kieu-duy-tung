@@ -1,73 +1,66 @@
-# React + TypeScript + Vite
+# TaskBoard - Ứng dụng Quản lý Công việc
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Ứng dụng quản lý công việc nội bộ (Internal Task Management) được xây dựng phục vụ cho bài kiểm tra năng lực Frontend Developer.
 
-Currently, two official plugins are available:
+## 🚀 Tính năng chính
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Quản lý danh sách công việc (CRUD):** Thêm, sửa, xoá công việc mượt mà.
+- **Phân loại & Bộ lọc:** Tìm kiếm theo tên, lọc theo trạng thái, mức độ ưu tiên và khoảng thời gian.
+- **Báo cáo thống kê (Dashboard):** Biểu đồ tỷ lệ hoàn thành và các chỉ số Todo/In Progress/Done.
+- **Smart Loading:** Sử dụng Skeleton UI và Table loading tích hợp với Redux Async Thunk để tối ưu trải nghiệm người dùng.
+- **Xử lý bất đồng bộ:** Mô phỏng các tác vụ API với độ trễ thực tế.
+- **Responsive Design:** Giao diện tương thích hoàn toàn với Mobile, Tablet và Desktop.
+- **Dark Mode:** Hỗ trợ giao diện sáng/tối tự động lưu vào localStorage.
 
-## React Compiler
+## 🛠 Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Core:** React 18 + TypeScript 5
+- **UI Component:** Ant Design 5.x
+- **State Management:** Redux Toolkit 2.x (createSlice, createAsyncThunk, createSelector)
+- **Styling:** Tailwind CSS 3.x
+- **Build Tool:** Vite 8.x
+- **Date Library:** Dayjs
 
-## Expanding the ESLint configuration
+## 📁 Cấu trúc thư mục
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```text
+src/
+├── assets/          # Mock data và tài nguyên tĩnh
+├── components/      # Các component dùng chung (Layout, UI)
+├── constants/       # Các hằng số cấu hình hệ thống
+├── features/        # Các module chức năng (Dashboard, Tasks)
+├── hooks/           # Custom hooks (useDebounce, etc.)
+├── stores/          # Cấu hình Redux Store, Slices và Thunks
+├── types/           # Định nghĩa kiểu dữ liệu TypeScript
+└── utils/           # Các hàm tiện ích (Date formatter, validation)
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## ⚙️ Cài đặt và Chạy ứng dụng
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. **Clone repository:**
+   ```bash
+   git clone [url-repo]
+   ```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+2. **Cài đặt dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Chạy ở chế độ phát triển (Dev Mode):**
+   ```bash
+   npm run dev
+   ```
+
+4. **Kiểm tra lỗi (Lint & Type check):**
+   ```bash
+   npm run validate
+   ```
+
+5. **Build cho Production:**
+   ```bash
+   npm run build
+   ```
+
+---
+*Phát triển bởi [Tên của bạn]*

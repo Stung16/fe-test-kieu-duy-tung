@@ -25,8 +25,6 @@ const commonSlice = createSlice({
   },
 });
 
-// ─── Selectors ───────────────────────────────────────────────────────────────
-
 export const selectMode = (state: RootState) => state.common.mode;
 export const selectCollapsed = (state: RootState) => state.common.collapsed;
 

@@ -13,6 +13,18 @@ export interface Task {
   tags?: string[];
 }
 
+export interface TaskFilters {
+  searchText: string;
+  status: TaskStatus[];
+  priority: TaskPriority | null;
+  dateRange: [string, string] | null;
+}
+
+export interface TaskPagination {
+  currentPage: number;
+  pageSize: number;
+}
+
 export interface TaskStats {
   total: number;
   todo: number;
