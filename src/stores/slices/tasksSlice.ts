@@ -1,19 +1,39 @@
-import { mockTasks } from "@/assets/mockData";
-import type { Task, TaskStats, TaskStatus } from "@/types";
-import {
-  createSelector,
-  createSlice,
-  type PayloadAction,
-} from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { createSelector } from "@reduxjs/toolkit";
 import dayjs from "dayjs";
+import isBetween from "dayjs/plugin/isBetween";
+import type {
+  Task,
+  TaskPagination,
+  TaskStatus,
+  TaskPriority,
+  TaskStats,
+  TaskFilters,
+} from "@/types";
+import { mockTasks } from "@/assets/mockData";
+import { DEFAULT_PAGE_SIZE, DEFAULT_CURRENT_PAGE } from "@/constants";
 import type { RootState } from "../store";
+
+dayjs.extend(isBetween);
 
 interface TasksState {
   items: Task[];
+  filters: TaskFilters;
+  pagination: TaskPagination;
 }
 
 const initialState: TasksState = {
   items: mockTasks,
+  filters: {
+    searchText: "",
+    status: [],
+    priority: null,
+    dateRange: null,
+  },
+  pagination: {
+    currentPage: DEFAULT_CURRENT_PAGE,
+    pageSize: DEFAULT_PAGE_SIZE,
+  },
 };
 
 const tasksSlice = createSlice({
@@ -45,16 +65,76 @@ const tasksSlice = createSlice({
         task.status = action.payload.status;
       }
     },
+    setFilter(state, action: PayloadAction<Partial<TaskFilters>>) {
+      state.filters = { ...state.filters, ...action.payload };
+      state.pagination.currentPage = DEFAULT_CURRENT_PAGE;
+    },
+    resetFilters(state) {
+      state.filters = initialState.filters;
+      state.pagination.currentPage = DEFAULT_CURRENT_PAGE;
+    },
+    setPage(state, action: PayloadAction<Partial<TaskPagination>>) {
+      state.pagination = { ...state.pagination, ...action.payload };
+    },
   },
 });
-
-// ─── Selectors ───────────────────────────────────────────────────────────────
 
 const selectTasksState = (state: RootState) => state.tasks;
 
 export const selectAllTasks = createSelector(
   [selectTasksState],
   (tasks) => tasks.items,
+);
+
+export const selectFilters = createSelector(
+  [selectTasksState],
+  (tasks) => tasks.filters,
+);
+
+export const selectPagination = createSelector(
+  [selectTasksState],
+  (tasks) => tasks.pagination,
+);
+
+export const selectFilteredTasks = createSelector(
+  [selectAllTasks, selectFilters],
+  (items, filters): Task[] => {
+    let result = items;
+    if (filters.searchText.trim()) {
+      const search = filters.searchText.toLowerCase().trim();
+      result = result.filter((t) => t.title.toLowerCase().includes(search));
+    }
+    if (filters.status.length > 0) {
+      const statusSet = new Set<TaskStatus>(filters.status);
+      result = result.filter((t) => statusSet.has(t.status));
+    }
+    if (filters.priority) {
+      const priority: TaskPriority = filters.priority;
+      result = result.filter((t) => t.priority === priority);
+    }
+    if (filters.dateRange) {
+      const [start, end] = filters.dateRange;
+      result = result.filter((t) => {
+        if (!t.dueDate) return false;
+        return dayjs(t.dueDate).isBetween(dayjs(start), dayjs(end), "day", "[]");
+      });
+    }
+    return result;
+  },
+);
+
+export const selectFilteredTotal = createSelector(
+  [selectFilteredTasks],
+  (tasks) => tasks.length,
+);
+
+export const selectPaginatedTasks = createSelector(
+  [selectFilteredTasks, selectPagination],
+  (filtered, pagination): Task[] => {
+    const { currentPage, pageSize } = pagination;
+    const start = (currentPage - 1) * pageSize;
+    return filtered.slice(start, start + pageSize);
+  },
 );
 
 export const selectTaskStats = createSelector(
@@ -81,6 +161,9 @@ export const {
   deleteTask,
   deleteManyTasks,
   updateTaskStatus,
+  setFilter,
+  resetFilters,
+  setPage,
 } = tasksSlice.actions;
 
 export default tasksSlice.reducer;
